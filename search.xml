@@ -1,30 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>【Codeforces 312 div2 A】Lala Land and Apple Trees</title>
-    <url>/2024/11/14/%E3%80%90Codeforces-312-div2-A%E3%80%91Lala-Land-and-Apple-Trees/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1><a href="https://www.luogu.com.cn/problem/CF558A">【Codeforces #312 div2 A】Lala Land and Apple Trees</a></h1>
-<hr>
-<p>首先，此题的大意是在一条坐标轴上，有$n$个点，每个点的权值为$a_{i}$,第一次从原点开始走，方向自选(&lt;- or -&gt;)，在过程中，若遇到一个权值&gt;0的点，则将此权值计入答案，并归零。当次、此方向上的所有点均为0后，输出此时的答案。<br>
-然后，进行分析:<br>
-我们很容易想到这是一个<strong>贪心</strong>，我们将正的和负的分别存入两个数组，最初的方向为: $zhengsum &gt; fusum ? zheng : fu$即正负两边那边权值 &gt; 0的点多就先往哪个方向走，然后，就成模拟题了……<br>
-<em>Code</em>:</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">100</span> + <span class="number">5</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> M = <span class="number">100001</span>;</span><br><span class="line"><span class="type">int</span> n,dir,l[M],r[M],lsum,rsum,ans;</span><br><span class="line"><span class="type">int</span> markjia[M] = &#123;<span class="number">0</span>&#125;,markjian[M] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">check</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(dir == <span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">100000</span>;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(markjian[i])<span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">100000</span>;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(markjia[i])<span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;n);</span><br><span class="line">    <span class="type">int</span> x,a;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d %d&quot;</span>,&amp;x,&amp;a);</span><br><span class="line">        <span class="keyword">if</span>(x &lt; <span class="number">0</span>)&#123;x *= <span class="number">-1</span>;l[x] = a,markjian[x] = <span class="number">1</span>,lsum++;&#125;</span><br><span class="line">        <span class="keyword">else</span> r[x] = a,markjia[x] = <span class="number">1</span>,rsum++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(lsum &gt;= rsum)dir = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">else</span> dir = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">check</span>() == <span class="number">0</span>)<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">if</span>(dir == <span class="number">-1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            ans += l[<span class="built_in">check</span>()];</span><br><span class="line">            markjian[<span class="built_in">check</span>()] = <span class="number">0</span>;</span><br><span class="line">            dir = <span class="number">1</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            ans += r[<span class="built_in">check</span>()];</span><br><span class="line">            markjia[<span class="built_in">check</span>()] = <span class="number">0</span>;</span><br><span class="line">            dir = <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; ans;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>$End.$</p>
-]]></content>
+    <title>[dp+bitset]数的种类</title>
+    <url>/2024/11/30/dp-bitset-%E6%95%B0%E7%9A%84%E7%A7%8D%E7%B1%BB/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="题目大意">题目大意</h2>
+<p>给定$n(n\le5\times10^{3})$个整数，问由这些整数通过“加法”操作，可以组成多少种数字？<br>
+其中，对于每个数$a_i$,$1\le a_{i}\le100$</p>
+<h2 id="初步思路">初步思路</h2>
+<p>首先，暴力<code>dfs</code>肯定是不能通过的，我们可以考虑用存在性dp来解决。</p>
+<blockquote>
+<p>存在性dp，即我们只需考虑这个状态是否能够实现，即用0/1来代替。</p>
+</blockquote>
+<p>先考虑最基本的，我们假设$dp[i][j]$为到第$a_i$个数位置能否组成$j$。然后考虑转移方程，首先$dp[i-1][j]$为$1$的情况那么$dp[i][j]$肯定能达到，在当前基础上$j+a_i$的数值也能达到。</p>
+<p>例如:$i-1$之前可以组成$1,2,3$,$a_i=2$，则对于$i$之前，$3,4,5$一定也可以达到。因此，我们借助倒推回去的思想可以得到状态转移方程:<br>
+$$dp[i][j]=(dp[i-1][j-a_i]|dp[i][j])$$<br>
+之所以要用或运算，是因为这两个状态只要其中一个为$1$就可以了，而或运算则正好适用于这个情况。<br>
+而这时候的空间复杂度为$5\times10^{3}\times5\times10^{3}\times100$，显然是过不了的</p>
+<h2 id="进一步思考">进一步思考</h2>
+<p>对于到$a_i$这一维度，其实是可以直接省掉的，以此来节省空间，但是对于时间复杂度来说，依然是过不了的。接下来，我们就可以用到$\texttt{bitset}$这个东西了。<br>
+$\texttt{bitset}$可以当作有很多二进制的集合，只支持位运算，而不支持加减乘除，支持随机访问。</p>
+<h3 id="texttt-bitset-常用函数">$\texttt{bitset}$常用函数</h3>
+<ol>
+<li><code>.count()</code>统计1的数量</li>
+<li><code>.reset()</code>全部重置为0<br>
+以上的时间复杂度均为$O(n)$</li>
+</ol>
+<h3 id="解题">解题</h3>
+<p>假设从左到右分别代表$…,3,2,1,0$能否组成，当前状态$\texttt{s}$为$11$,$a_i=1$,只需要将当前状态先左移1位变成$110$,再或起来变成$111$即代表能组成$2,1,0$($\texttt{Tips:}$从右往左为低位到高位)。显然达到了我们的需求，假如$a_i=5$,只需要左移5位再或起来即可。<br>
+因此，我们可以得到转移方程:<br>
+$$dp=dp|(dp&lt;&lt;a_i)$$<br>
+其中$\texttt{dp}$用$\texttt{bitset}$表示,故代码如下:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">5e3</span> + <span class="number">5</span>,M = <span class="number">5e5</span> + <span class="number">5</span>;</span><br><span class="line"><span class="type">int</span> n,a[N];</span><br><span class="line">bitset&lt;M&gt; bs;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>;i &lt;= n;i++)cin &gt;&gt; a[i];</span><br><span class="line">    bs[<span class="number">0</span>] = <span class="number">1</span>; <span class="comment">//初始化代表可以表示0</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        bs |= (bs &lt;&lt; a[i]);<span class="comment">//状态转移</span></span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; bs.<span class="built_in">count</span>();<span class="comment">//统计1的个数即为答案</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>题解</category>
       </categories>
       <tags>
+        <tag>dp</tag>
         <tag>c++</tag>
-        <tag>codeforces</tag>
       </tags>
   </entry>
   <entry>
     <title>搜索专题</title>
     <url>/2024/11/15/%E6%90%9C%E7%B4%A2%E4%B8%93%E9%A2%98/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1>搜索</h1>
-<p>搜索，常常适用于当我们想不出题目正解时所采取所谓的<s>骗分</s>方法，因为题目很大部分搜索是会过不了$100$%样例的,但是由于搜索的思维简单和暴力性，我们往往可以较为轻松的骗到很大一部分分数。</p>
+<p>搜索，常常适用于当我们想不出题目正解时所采取所谓的<s>骗分</s>方法，因为题目很大部分搜索是会过不了$100\%$样例的,但是由于搜索的思维简单和暴力性，我们往往可以较为轻松的骗到很大一部分分数。</p>
 <h2 id="dfs-深度优先搜索">dfs(深度优先搜索)</h2>
 <blockquote>
 <p>DFS 全称是 Depth First Search，中文名是深度优先搜索，是一种用于遍历或搜索树或图的算法。所谓深度优先，就是说每次都尝试向更深的节点走。<br>
@@ -47,6 +66,26 @@ dfs代码和递归类似，但是其思想不一样</p>
       <tags>
         <tag>c++</tag>
         <tag>搜索</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>【Codeforces 312 div2 A】Lala Land and Apple Trees</title>
+    <url>/2024/11/14/%E3%80%90Codeforces-312-div2-A%E3%80%91Lala-Land-and-Apple-Trees/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1><a href="https://www.luogu.com.cn/problem/CF558A">【Codeforces #312 div2 A】Lala Land and Apple Trees</a></h1>
+<hr>
+<p>首先，此题的大意是在一条坐标轴上，有$n$个点，每个点的权值为$a_{i}$,第一次从原点开始走，方向自选(&lt;- or -&gt;)，在过程中，若遇到一个权值&gt;0的点，则将此权值计入答案，并归零。当次、此方向上的所有点均为0后，输出此时的答案。<br>
+然后，进行分析:<br>
+我们很容易想到这是一个<strong>贪心</strong>，我们将正的和负的分别存入两个数组，最初的方向为: $zhengsum &gt; fusum ? zheng : fu$即正负两边那边权值 &gt; 0的点多就先往哪个方向走，然后，就成模拟题了……<br>
+<em>Code</em>:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">100</span> + <span class="number">5</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> M = <span class="number">100001</span>;</span><br><span class="line"><span class="type">int</span> n,dir,l[M],r[M],lsum,rsum,ans;</span><br><span class="line"><span class="type">int</span> markjia[M] = &#123;<span class="number">0</span>&#125;,markjian[M] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">check</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(dir == <span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">100000</span>;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(markjian[i])<span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">100000</span>;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(markjia[i])<span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;n);</span><br><span class="line">    <span class="type">int</span> x,a;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d %d&quot;</span>,&amp;x,&amp;a);</span><br><span class="line">        <span class="keyword">if</span>(x &lt; <span class="number">0</span>)&#123;x *= <span class="number">-1</span>;l[x] = a,markjian[x] = <span class="number">1</span>,lsum++;&#125;</span><br><span class="line">        <span class="keyword">else</span> r[x] = a,markjia[x] = <span class="number">1</span>,rsum++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(lsum &gt;= rsum)dir = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">else</span> dir = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">check</span>() == <span class="number">0</span>)<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">if</span>(dir == <span class="number">-1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            ans += l[<span class="built_in">check</span>()];</span><br><span class="line">            markjian[<span class="built_in">check</span>()] = <span class="number">0</span>;</span><br><span class="line">            dir = <span class="number">1</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            ans += r[<span class="built_in">check</span>()];</span><br><span class="line">            markjia[<span class="built_in">check</span>()] = <span class="number">0</span>;</span><br><span class="line">            dir = <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; ans;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>$End.$</p>
+]]></content>
+      <categories>
+        <category>题解</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+        <tag>codeforces</tag>
       </tags>
   </entry>
 </search>
