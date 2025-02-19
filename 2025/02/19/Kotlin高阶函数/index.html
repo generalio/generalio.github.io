@@ -1,0 +1,311 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Kotlin高阶函数 | general's blog</title><meta name="author" content="generals"><meta name="copyright" content="generals"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="Kotlin高阶函数 定义高阶函数 之前的的函数式AP会接受Lambda参数，同样我们也可以自定义一个函数式API，也就是高阶函数。  高阶函数的定义是一个函数接受另一个函数作为他的参数，或者返回值是一个函数，那这个函数就是高阶函数。  那么如何定义一个函数类型呢?基本规则就是:(String, Int) -&gt; Unit。其中(String, Int)表示传的参数类型，如果没有也可以为空，U">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin高阶函数">
+<meta property="og:url" content="http://generalio.github.io/2025/02/19/Kotlin%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:site_name" content="general&#39;s blog">
+<meta property="og:description" content="Kotlin高阶函数 定义高阶函数 之前的的函数式AP会接受Lambda参数，同样我们也可以自定义一个函数式API，也就是高阶函数。  高阶函数的定义是一个函数接受另一个函数作为他的参数，或者返回值是一个函数，那这个函数就是高阶函数。  那么如何定义一个函数类型呢?基本规则就是:(String, Int) -&gt; Unit。其中(String, Int)表示传的参数类型，如果没有也可以为空，U">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://generalio.github.io/img/pic6.png">
+<meta property="article:published_time" content="2025-02-19T08:30:38.000Z">
+<meta property="article:modified_time" content="2025-02-19T08:30:38.000Z">
+<meta property="article:author" content="generals">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="Kotlin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://generalio.github.io/img/pic6.png"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/generalio/img/logo.png"><link rel="canonical" href="http://generalio.github.io/2025/02/19/Kotlin%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":true,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Kotlin高阶函数',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  isShuoshuo: false
+}</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/progress_bar.css" media="defer" onload="this.media='all'"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load', preloader.endLoading)
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="web_bg" style="background-image: url(/img/p0.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group hide"><i class="fa-fw fas fa-list"></i><span> 个人</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/pic6.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">general's blog</span></a><a class="nav-page-title" href="/"><span class="site-name">Kotlin高阶函数</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group hide"><i class="fa-fw fas fa-list"></i><span> 个人</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Kotlin高阶函数</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-02-19T08:30:38.000Z" title="发表于 2025-02-19 16:30:38">2025-02-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-02-19T08:30:38.000Z" title="更新于 2025-02-19 16:30:38">2025-02-19</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Android/">Android</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="leancloud_visitors" id="/2025/02/19/Kotlin%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/" data-flag-title="Kotlin高阶函数"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span class="leancloud-visitors-count"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1>Kotlin高阶函数</h1>
+<h2 id="定义高阶函数">定义高阶函数</h2>
+<p>之前的的函数式AP会接受Lambda参数，同样我们也可以自定义一个函数式API，也就是高阶函数。</p>
+<blockquote>
+<p>高阶函数的定义是一个函数接受另一个函数作为他的参数，或者返回值是一个函数，那这个函数就是高阶函数。</p>
+</blockquote>
+<p>那么如何定义一个函数类型呢?基本规则就是:<code>(String, Int) -&gt; Unit</code>。其中<code>(String, Int)</code>表示传的参数类型，如果没有也可以为空，<code>Unit</code>指的是没有返回值，也可以改成<code>String,Int</code>等。</p>
+<p>比如我们定义一个<code>num1AndNum2()</code>高阶函数:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">num1AndNum2</span><span class="params">(num1: <span class="type">Int</span>, num2: <span class="type">Int</span>, operation: (<span class="type">Int</span>, <span class="type">Int</span>) -&gt; <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">    <span class="keyword">val</span> result = operation(num1,num2)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>num1,num2</code>很好理解就是两个参数，<code>operation: (Int, Int) -&gt; Int</code>就是我们传的函数了，代表这个函数需要传两个Int类型的参数，然后返回值为Int，然后我们定义两个函数:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">plus</span><span class="params">(num1: <span class="type">Int</span>, num2: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> num1 + num2</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">minus</span><span class="params">(num1: <span class="type">Int</span>, num2: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> num1 - num2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这两个函数就符合<code>operation</code>这个函数类型，然后我们调用这个高阶函数:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> num1 = <span class="number">100</span></span><br><span class="line">    <span class="keyword">val</span> num2 = <span class="number">80</span></span><br><span class="line">    <span class="keyword">val</span> result1 = num1AndNum2(num1,num2,::plus)</span><br><span class="line">    <span class="keyword">val</span> result2 = num1AndNum2(num1,num2,::mini)</span><br><span class="line">    println(<span class="string">&quot;result1 is <span class="variable">$result1</span>, result2 is <span class="variable">$result2</span>&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中第三个参数<code>::plus</code>是函数引用方式的写法，代表将这个函数作为参数传了进去。运行结果如下:</p>
+<p><img src="https://img.z4a.net/images/2025/02/18/6ac74c4ce2c65e41b7f2b5a0a4cb6ff9.png" alt="高阶函数运行结果"></p>
+<p>既然我们传的是函数参数类型，我们也可以直接用lambda表达式直接传进去，就会改成:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> num1 = <span class="number">100</span></span><br><span class="line">    <span class="keyword">val</span> num2 = <span class="number">80</span></span><br><span class="line">    <span class="keyword">val</span> result1 = num1AndNum2(num1,num2) &#123;n1,n2 -&gt;</span><br><span class="line">        n1 + n2</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">val</span> result2 = num1AndNum2(num1,num2) &#123;n1,n2 -&gt;</span><br><span class="line">        n1 - n2</span><br><span class="line">    &#125;</span><br><span class="line">    println(<span class="string">&quot;result1 is <span class="variable">$result1</span>, result2 is <span class="variable">$result2</span>&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码表示将<code>n1,n2</code>作为参数，<code>n1-n2</code>(最后一行代码)作为返回值，结果与上述是一样的。</p>
+<p>高阶函数可以被用于拓展函数中来使得代码更精简，比如<code>apply</code>的用法。我们新建一个<code>StringBuilder</code>的拓展函数:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> StringBuilder.<span class="title">build</span><span class="params">(block: <span class="type">StringBuilder</span>.() -&gt; <span class="type">Unit</span>)</span></span>: StringBuilder &#123;</span><br><span class="line">    block()</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中<code>fun StringBuilder.build</code>就是对<code>StringBuilder</code>增加了一个拓展函数，然后<code>block: StringBuilder.()</code>中将函数类型定义到<code>StringBuilder</code>类中的好处就是能提供上下文，使得更简单的操作，然后最后的<code>return this</code>就是返回这个定义的<code>StringBuilder</code>对象。然后调用:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> list = listOf(<span class="string">&quot;Apple&quot;</span>, <span class="string">&quot;Banana&quot;</span>, <span class="string">&quot;Orange&quot;</span>, <span class="string">&quot;Pear&quot;</span>, <span class="string">&quot;Grape&quot;</span>, <span class="string">&quot;Watermelon&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> result = StringBuilder().build &#123;</span><br><span class="line">        append(<span class="string">&quot;Start eating fruits.\n&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span>(fruit <span class="keyword">in</span> list) &#123;</span><br><span class="line">            append(fruit).append(<span class="string">&quot;\n&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        append(<span class="string">&quot;Ate all fruits.&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    println(result.toString())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>就实现了类似<code>apply</code>的用法了。</p>
+<h2 id="内联函数">内联函数</h2>
+<p>在我们定义一个高阶函数时，当编译器转成Java时，会将这个函数创建一个匿名类，意思是每次调用都会创建一个增大开销，而为了避免不必要的开销，就引入了内联函数，只需要在高阶函数前加上<code>inline</code>即可:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">num1AndNum2</span><span class="params">(num1: <span class="type">Int</span>, num2: <span class="type">Int</span>, operation: (<span class="type">Int</span>, <span class="type">Int</span>) -&gt; <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">    <span class="keyword">val</span> result = operation(num1,num2)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>内联函数的原理时当进行调用时会进行替换，即将<code>n1+n2</code>替换到<code>operation</code>处，然后再将内联函数的代码全部替换到调用的地方。</p>
+<h2 id="nonline与crossinline">nonline与crossinline</h2>
+<p>当高阶函数被加上<code>inline</code>关键字后，里面参数的所有函数类型参数，在调用时均会进行替换，但假如我们某一个函数不想被u内联呢？只需要加上<code>nonline</code>关键字就好了。比如:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">inlineTest</span><span class="params">(block1: () -&gt; <span class="type">Unit</span>, nonline block2: () -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就只有<code>block1</code>会被内联了。那为什么有些时候我们不想被内联呢？最主要的是因为内联函数类型参数只允许传递给内联函数，而不能传递给非内联函数，比如:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义一个内联函数，带有一个内联的函数类型参数</span></span><br><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">inlineFunction1</span><span class="params">(block: () -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    println(<span class="string">&quot;Before block execution in inlineFunction1&quot;</span>)</span><br><span class="line">    block()</span><br><span class="line">    println(<span class="string">&quot;After block execution in inlineFunction1&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 再定义一个内联函数，带有一个内联的函数类型参数</span></span><br><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">inlineFunction2</span><span class="params">(block: () -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    println(<span class="string">&quot;Before block execution in inlineFunction2&quot;</span>)</span><br><span class="line">    block()</span><br><span class="line">    println(<span class="string">&quot;After block execution in inlineFunction2&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义一个非内联函数</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">nonInlineFunction</span><span class="params">(block: () -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    println(<span class="string">&quot;Before block execution in nonInlineFunction&quot;</span>)</span><br><span class="line">    block()</span><br><span class="line">    println(<span class="string">&quot;After block execution in nonInlineFunction&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 内联函数可以调用另一个内联函数</span></span><br><span class="line">    inlineFunction1 &#123;</span><br><span class="line">        inlineFunction2 &#123;</span><br><span class="line">            println(<span class="string">&quot;Hello from inlineFunction2&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 内联函数不能调用非内联函数</span></span><br><span class="line">    <span class="comment">// 下面的代码会导致编译错误</span></span><br><span class="line">    <span class="comment">// inlineFunction1 &#123;</span></span><br><span class="line">    <span class="comment">//     nonInlineFunction &#123;</span></span><br><span class="line">    <span class="comment">//         println(&quot;Hello from nonInlineFunction&quot;)</span></span><br><span class="line">    <span class="comment">//     &#125;</span></span><br><span class="line">    <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 非内联函数可以调用内联函数和非内联函数</span></span><br><span class="line">    nonInlineFunction &#123;</span><br><span class="line">        inlineFunction2 &#123;</span><br><span class="line">            println(<span class="string">&quot;Hello from inlineFunction2 inside nonInlineFunction&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码就很好的解释了限制性。还有就是内联函数所引用的lambda表达式是可以用<code>return</code>关键字进行函数返回的，而非内联函数只能进行局部返回:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">printString</span><span class="params">(str: <span class="type">String</span>, block: (<span class="type">String</span>) -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    println(<span class="string">&quot;begin&quot;</span>)</span><br><span class="line">    block(str)</span><br><span class="line">    println(<span class="string">&quot;end&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> str = <span class="string">&quot;&quot;</span></span><br><span class="line">    printString(str) &#123; s -&gt;</span><br><span class="line">    	print(<span class="string">&quot;lambda start&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span>(s.isEmpty()) <span class="keyword">return</span><span class="symbol">@printString</span></span><br><span class="line">        println(s)</span><br><span class="line">        println(<span class="string">&quot;lambda end&quot;</span>)              </span><br><span class="line">    &#125;</span><br><span class="line">    println(<span class="string">&quot;main end&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里使用了<code>return@printString</code>表示局部返回，不再执行lambda的剩余代码，而内联函数就可以直接使用<code>return</code>，因为他的本质是直接进行替换，会直接返回<code>main()</code>函数，所以编译后也不会执行<code>println(&quot;main end&quot;)</code>这行代码。所以大部分情况，我们都需要将高阶函数定义成内联函数。</p>
+<p>有一种特殊情况:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">runRunnable</span><span class="params">(block: () -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> runnable = Runnable &#123;</span><br><span class="line">        block()</span><br><span class="line">    &#125;</span><br><span class="line">    runnable.run()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码如果没有加<code>inline</code>是可以正常运行的，但如果加了<code>inline</code>的话就会报错:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Can&#x27;t inline &#x27;block&#x27; here: it may contain non-local returns. Add &#x27;crossinline&#x27; modifier to parameter declaration &#x27;block</span><br></pre></td></tr></table></figure>
+<p>为什么会报错呢？因为Runnable实际上是一个非内联的函数参数，但是我们将<code>block()</code>这个内联函数作为参数传给了非内联函数，违反了内联函数参数的限制。因为内联函数允许使用<code>return</code>关键字而非内联函数是不允许使用的。那么如何解决呢？只需要加入<code>crossinline</code>关键字就可以了：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">runRunnable</span><span class="params">(<span class="keyword">crossinline</span> block: () -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> runnable = Runnable &#123;</span><br><span class="line">        block()</span><br><span class="line">    &#125;</span><br><span class="line">    runnable.run()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>crossinline</code>关键字的作用是什么呢，相当于进行了一个约定，保证内联函数的lambda表达式中一定不会出现<code>return</code>关键字，就避免了冲突。这样申明后，在内联函数中仍可使用<code>return@runRunnable</code>进行局部返回，但绝对不能直接使用<code>return</code>。</p>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>Kotlin高阶函数</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="http://generalio.github.io/2025/02/19/Kotlin%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/">http://generalio.github.io/2025/02/19/Kotlin%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>generals</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2025-02-19</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2025-02-19</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Android/">Android</a><a class="post-meta__tags" href="/tags/Kotlin/">Kotlin</a></div><div class="post-share"><div class="social-share" data-image="/img/pic6.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/02/19/Kotlin%E7%9A%84lambda%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/" title="Kotlin的lambda函数式编程"><img class="cover" src="/img/pic5.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Kotlin的lambda函数式编程</div></div><div class="info-2"><div class="info-item-1">lambda函数式编程 lambda表达式结构是:&#123;参数名: 参数类型, 参数名: 参数类型 … -&gt; 函数体&#125;(参数1, 参数2, …) 如我们要找出字符串数组的最长的那个单词，可以写成: 12345678910fun main() &#123;    val list = listOf(&quot;Apple&quot;, &quot;Banana&quot;, &quot;Orange&quot;, &quot;Pear&quot;, &quot;Grape&quot;, &quot;Watermelon&quot;)    var maxLengthFruit = &quot;&quot;    for (fruit in list) &#123;        if(fruit.length &gt; maxLengthFruit.length) &#123;            maxLengthFruit = fruit        &#125;    &#125;   ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/02/10/Toolbar-DrawerLayout-BottomNavigationView%E7%9A%84%E4%BD%BF%E7%94%A8/" title="Toolbar+DrawerLayout+BottomNavigationView的使用"><img class="cover" src="/img/pic3.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-10</div><div class="info-item-2">Toolbar+DrawerLayout+BottomNavigationView的使用</div></div><div class="info-2"><div class="info-item-1">Toolbar Toolbar相比于自带的标题栏，能有更多的扩展性，更为灵活。 现在res/themes/themes.xml中，把自带的标题栏关闭掉: 1&lt;style name=&quot;Theme.MaterialDemo&quot; parent=&quot;Theme.MaterialComponents.Light.NoActionBar&quot;&gt; 然后在activity_main.xml里面设置布局: 12345678910111213141516171819202122232425262728&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;   ...</div></div></div></a><a class="pagination-related" href="/2025/02/19/Kotlin%E7%9A%84lambda%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/" title="Kotlin的lambda函数式编程"><img class="cover" src="/img/pic5.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-19</div><div class="info-item-2">Kotlin的lambda函数式编程</div></div><div class="info-2"><div class="info-item-1">lambda函数式编程 lambda表达式结构是:&#123;参数名: 参数类型, 参数名: 参数类型 … -&gt; 函数体&#125;(参数1, 参数2, …) 如我们要找出字符串数组的最长的那个单词，可以写成: 12345678910fun main() &#123;    val list = listOf(&quot;Apple&quot;, &quot;Banana&quot;, &quot;Orange&quot;, &quot;Pear&quot;, &quot;Grape&quot;, &quot;Watermelon&quot;)    var maxLengthFruit = &quot;&quot;    for (fruit in list) &#123;        if(fruit.length &gt; maxLengthFruit.length) &#123;            maxLengthFruit = fruit        &#125;    &#125;   ...</div></div></div></a><a class="pagination-related" href="/2025/02/19/Jetpack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Jetpack学习笔记"><img class="cover" src="/img/pic4.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-19</div><div class="info-item-2">Jetpack学习笔记</div></div><div class="info-2"><div class="info-item-1">Jetpack jetpack是Google推出的新的架构组件库，分为基础，架构，行为，界面4个部分。 ViewModel $\texttt{ViewModel}$可以帮助Activity分担一部分工作，这样就不用让Activity里面的代码看着非常复杂，减少逻辑。并且$\texttt{ViewModel}$的生命周期是要比Activity长的，当手机屏幕旋转时，Activity会经历onPause(),onStop(),onDestroy(),onCreate(),onStart(),onResume()的过程，这中途我们创建的数据就会一同丢失，而$\texttt{ViewModel}$则很好的避免了这一点，他能在旋转时数据不丢失，而只有Activity退出时才会一起退出。 先在build.gradle里面添加: 12implementation &quot;androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7&quot;implementation...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">generals</div><div class="author-info-description">「如果真爱有颜色，那一定是被终焉之红所染尽的颜色」</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/generalio"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/generalio" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:1487144524@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Blog最近才重建完成,文章内容不是很多,すみません~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">Kotlin高阶函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.</span> <span class="toc-text">定义高阶函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">内联函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#nonline%E4%B8%8Ecrossinline"><span class="toc-number">1.3.</span> <span class="toc-text">nonline与crossinline</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/02/19/Kotlin%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/" title="Kotlin高阶函数"><img src="/img/pic6.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Kotlin高阶函数"/></a><div class="content"><a class="title" href="/2025/02/19/Kotlin%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/" title="Kotlin高阶函数">Kotlin高阶函数</a><time datetime="2025-02-19T08:30:38.000Z" title="发表于 2025-02-19 16:30:38">2025-02-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/02/19/Kotlin%E7%9A%84lambda%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/" title="Kotlin的lambda函数式编程"><img src="/img/pic5.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Kotlin的lambda函数式编程"/></a><div class="content"><a class="title" href="/2025/02/19/Kotlin%E7%9A%84lambda%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/" title="Kotlin的lambda函数式编程">Kotlin的lambda函数式编程</a><time datetime="2025-02-19T08:29:43.000Z" title="发表于 2025-02-19 16:29:43">2025-02-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/02/19/Jetpack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Jetpack学习笔记"><img src="/img/pic4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Jetpack学习笔记"/></a><div class="content"><a class="title" href="/2025/02/19/Jetpack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Jetpack学习笔记">Jetpack学习笔记</a><time datetime="2025-02-19T08:26:44.000Z" title="发表于 2025-02-19 16:26:44">2025-02-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/02/10/Toolbar-DrawerLayout-BottomNavigationView%E7%9A%84%E4%BD%BF%E7%94%A8/" title="Toolbar+DrawerLayout+BottomNavigationView的使用"><img src="/img/pic3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Toolbar+DrawerLayout+BottomNavigationView的使用"/></a><div class="content"><a class="title" href="/2025/02/10/Toolbar-DrawerLayout-BottomNavigationView%E7%9A%84%E4%BD%BF%E7%94%A8/" title="Toolbar+DrawerLayout+BottomNavigationView的使用">Toolbar+DrawerLayout+BottomNavigationView的使用</a><time datetime="2025-02-10T12:33:20.000Z" title="发表于 2025-02-10 20:33:20">2025-02-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/30/dp-bitset-%E6%95%B0%E7%9A%84%E7%A7%8D%E7%B1%BB/" title="[dp+bitset]数的种类"><img src="/img/pic1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="[dp+bitset]数的种类"/></a><div class="content"><a class="title" href="/2024/11/30/dp-bitset-%E6%95%B0%E7%9A%84%E7%A7%8D%E7%B1%BB/" title="[dp+bitset]数的种类">[dp+bitset]数的种类</a><time datetime="2024-11-29T16:32:25.000Z" title="发表于 2024-11-30 00:32:25">2024-11-30</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/p0.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By generals</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+      
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.isShuoshuo
+  const option = null
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: 'cndcjleB6bYBbNpCQXFqLN2w-gzGzoHsz',
+      appKey: 'ZQzX1QlzVZMUW2bgKDY4NfVR',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      visitor: true,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+    }
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js')
+      initValine(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><canvas id="snow"></canvas><script async src="/js/snow.js"></script><div class="aplayer no-destroy" data-id="4867845651" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false"> </div> ><script src="/js/style.js"></script><script src="/js/title.js"></script><script async src="//npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="true"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
